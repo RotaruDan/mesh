@@ -36,6 +36,7 @@ struct viewVolume{GLdouble xRight, xLeft;
 
 GLdouble scale = 1;
 viewCamera * currentView = &initial;
+GLdouble xAngle, yAngle, zAngle;
 
 // Scene
 Group root;
@@ -266,8 +267,13 @@ void updateProjection(){
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
-	glMatrixMode(GL_MODELVIEW);
+	updateCamera();
 	glViewport(0,0, Vp.w, Vp.h); 
+	
+	glRotatef(xAngle, 1, 0, 0);
+	glRotatef(yAngle, 0, 1, 0);
+	glRotatef(zAngle, 0, 0, 1);
+
 	root.render();
 
 	glutSwapBuffers(); // Hay dos buffers que se van intercambiando para ir pinando en ellos
@@ -279,13 +285,21 @@ void keyPres(unsigned char key, int mX, int mY){
 	if(key == 27) {  /* Escape key */  
 		glutLeaveMainLoop (); //Freeglut's sentence for stopping glut's main loop 
 	} else if(key == 'i') { 
-		
+		xAngle = 0;
+		yAngle = 0;
+		zAngle = 0;
 	} else if(key == 'x') { 
-		
+		xAngle += 0.5;
+		yAngle = 0;
+		zAngle = 0;
 	} else if(key == 'y') { 
-		
+		xAngle = 0;
+		yAngle += 0.5;
+		zAngle = 0;
 	} else if(key == 'z') { 
-		
+		xAngle = 0;
+		yAngle = 0;
+		zAngle += 0.5;
 	} else {
 		need_redisplay = false;
 	}
