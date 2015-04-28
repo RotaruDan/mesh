@@ -8,7 +8,7 @@ Malla::Malla(int nV, int nN, int nC, PuntoVector3D** v, PuntoVector3D** n, Cara*
     normal=n;
     numeroCaras=nC;
     cara=c;
-    solid=false;
+    solid=true;
 }
 
 Malla::Malla() {}
@@ -68,7 +68,7 @@ PuntoVector3D* Malla::newell(int i1, int i2, int i3, int i4) {
                (v3->getX()-v2->getX())*(v3->getY()+v2->getY())+
                (v4->getX()-v3->getX())*(v4->getY()+v3->getY())+
                (v1->getX()-v4->getX())*(v1->getY()+v4->getY());
-    PuntoVector3D* n=new PuntoVector3D(nx, ny, nz, 0);
+    PuntoVector3D* n=new PuntoVector3D(-nx, -ny, -nz, 0);
     n->normalizar();
     return n;
 }

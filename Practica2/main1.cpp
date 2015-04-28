@@ -14,6 +14,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#define PI 3.14159265359
 using namespace std;
 //---------------------------------------------------------------------------
 
@@ -24,7 +25,7 @@ struct viewPort{GLsizei w; GLsizei h;} Vp = {700, 700};
 struct viewCamera{GLdouble eyeX, eyeY, eyeZ;
         GLdouble lookX, lookY, lookZ;
         GLdouble upX, upY, upZ;} 
-			initial = {350, 350, 350, 0, 0, 0, 0, 1, 0}, 
+			initial = {350, 350, 350, 0, 100, 0, 0, 1, 0}, 
 			front = {0, 0, 550, 0,0,0, 0,1,0},
 			topView = {0, 450, 0, 0,0,0, 1,0,1}, 
 			lateral = {550, 0, 0, 0,0,0, 0,1,0};
@@ -34,7 +35,7 @@ struct viewVolume{GLdouble xRight, xLeft;
         GLdouble yTop, yBot;
         GLdouble zNear, zFar;} Pj = {350, -350, 350,-350, 1, 1000};
 
-GLdouble scale = 1;
+GLdouble scale = 1.5;
 viewCamera * currentView = &initial;
 GLdouble xAngle, yAngle, zAngle;
 
@@ -122,9 +123,9 @@ int main(int argc, char* argv[]){
 	
 	//Vertices de la malla
 	for(int i = 1; i < n; ++i) {
-		double theta = i * 360 / (double) n;
-		double c = cos(theta);
-		double s = sin(theta);
+		double theta = (double) i * 360 / (double) n / 180 * PI;
+		double c = cosf(theta);
+		double s = sinf(theta);
 
 		//R_y es la matriz de rotación sobre el eje Y
 		for(int j = 0; j < m; ++j){
@@ -141,7 +142,7 @@ int main(int argc, char* argv[]){
 	//Construcción de las caras
 	int faceIndex = 0;
 	for(int i = 0; i < n; ++i) { //unir el perfil i‐ésimo con el (i+1)%n‐ésimo
-		for(int j = 0; j < m; ++j) { //este vértice cierra una cara
+		for(int j = 0; j < m-1; ++j) { //este vértice cierra una cara
 			int index = i * m + j;
 			int* nv = new int[4];
 			nv[0] = index;
@@ -162,6 +163,7 @@ int main(int argc, char* argv[]){
 	initScene();
 	// Classic glut's main loop can be stopped after X-closing the window, using freeglut's setting
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION) ;
+
 	glutMainLoop();  //while (continue_in_main_loop) glutMainLoopEvent();
 	// Window destruction (never reach this point using classic glut)
 	glutDestroyWindow(win);
@@ -221,7 +223,6 @@ void initGL(){
 	glShadeModel(GL_SMOOTH);
 
 	glClearColor(0, 0, 0, 1.0f);
-
 	// Camera set up
 	updateCamera();
 	// Frustum set up
@@ -270,9 +271,9 @@ void display(void) {
 	updateCamera();
 	glViewport(0,0, Vp.w, Vp.h); 
 	
-	glRotatef(xAngle, 1, 0, 0);
-	glRotatef(yAngle, 0, 1, 0);
-	glRotatef(zAngle, 0, 0, 1);
+	glRotated(xAngle, 1, 0, 0);
+	glRotated(yAngle, 0, 1, 0);
+	glRotated(zAngle, 0, 0, 1);
 
 	root.render();
 
